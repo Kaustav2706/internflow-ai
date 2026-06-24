@@ -13,12 +13,14 @@ import {
   Bookmark
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 export default function FAQExplorer() {
   const searchParams = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
 
   const { faqs, voteHelpfulFAQ, incrementFAQViews, currentUser } = useApp();
+  const router = useRouter();
   
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState<FAQCategory | 'All'>('All');
@@ -255,6 +257,24 @@ export default function FAQExplorer() {
                         >
                           <ThumbsUp className={`w-3.5 h-3.5 ${hasVoted ? 'fill-current' : ''}`} />
                           <span>Helpful ({faq.helpfulCount})</span>
+                        </button>
+
+                        {/* Ask Yaksha AI */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // Persist the question and navigate to AI assistant
+                            try {
+                              localStorage.setItem('yaksha_incoming_query', faq.question);
+                            } catch (err) {
+                              console.error('Unable to set incoming query', err);
+                            }
+                            router.push('/dashboard/intern/ai-assistant');
+                          }}
+                          className="py-1.5 px-3 rounded-lg border text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer bg-gray-800/40 border-white/5 text-gray-300 hover:text-white hover:bg-blue-600/5"
+                        >
+                          <ArrowRight className="w-3.5 h-3.5" />
+                          <span>Ask Yaksha</span>
                         </button>
                       </div>
 

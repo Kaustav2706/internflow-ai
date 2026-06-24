@@ -314,6 +314,24 @@ export default function AIAssistant() {
     setInput('');
   };
 
+  // If an external page (FAQ) set a pending query, consume it and send immediately
+  useEffect(() => {
+    try {
+      const pending = localStorage.getItem('yaksha_incoming_query');
+      if (pending) {
+        localStorage.removeItem('yaksha_incoming_query');
+        // If a pending query exists, send it as a new message
+        setTimeout(() => {
+          // Use handleSendMessage to create/activate a chat and stream response
+          handleSendMessage(pending);
+        }, 60);
+      }
+    } catch (err) {
+      console.error('Error reading pending incoming query', err);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Click suggestion handler
   const handleSuggestionClick = (prompt: string) => {
     if (isStreaming) return;

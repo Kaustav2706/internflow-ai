@@ -21,6 +21,8 @@ export default function InternDashboard() {
   const { currentUser, updateProfile } = useApp();
 
   // Tasks Checklist
+  const [newTaskText, setNewTaskText] = useState('');
+  const [nextTaskId, setNextTaskId] = useState(6);
   const [tasks, setTasks] = useState([
     { id: 1, text: 'Squash feature commits and push PR to dev', done: true },
     { id: 2, text: 'Read the GitHub branching FAQ guidelines', done: true },
@@ -28,6 +30,28 @@ export default function InternDashboard() {
     { id: 4, text: 'Schedule a brief coordinate call with Aarav', done: false },
     { id: 5, text: 'Configure Docker environment parameters', done: false }
   ]);
+
+  const addTask = () => {
+    const text = newTaskText.trim();
+    if (!text) return;
+
+    const nextTask = { id: nextTaskId, text, done: false };
+    const updated = [...tasks, nextTask];
+    setTasks(updated);
+    setNextTaskId((prev) => prev + 1);
+    setNewTaskText('');
+    // Persist to server
+    if (currentUser) {
+      const payload = { tasks: updated, tasksCompleted: updated.filter(t => t.done).length };
+      // fire-and-forget
+      updateProfile(payload).catch((e) => console.error('Failed to persist tasks', e));
+    }
+  };
+
+  const handleAddTask = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    addTask();
+  };
 
   const toggleTask = (id: number) => {
     const list = tasks.map(t => {
@@ -43,6 +67,10 @@ export default function InternDashboard() {
       return t;
     });
     setTasks(list);
+    if (currentUser) {
+      const payload = { tasks: list, tasksCompleted: list.filter(t => t.done).length };
+      updateProfile(payload).catch((e) => console.error('Failed to persist tasks', e));
+    }
   };
 
   const doneCount = tasks.filter(t => t.done).length;
@@ -126,11 +154,29 @@ export default function InternDashboard() {
         {/* Checklist */}
         <div className="glass-panel p-6 rounded-2xl lg:col-span-2 flex flex-col justify-between shadow-md">
           <div>
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-5">
               <div className="flex items-center gap-2">
                 <CheckSquare className="w-5 h-5 text-blue-400" />
                 <h3 className="text-sm font-bold text-gray-200">Daily Tasks Checklist</h3>
               </div>
+
+              <form onSubmit={handleAddTask} className="flex items-center gap-2 w-full sm:w-auto">
+                <input
+                  value={newTaskText}
+                  onChange={(e) => setNewTaskText(e.target.value)}
+                  placeholder="Add a new task"
+                  className="glass-input w-full sm:w-[220px] px-3 py-2 text-xs rounded-xl border border-white/10 bg-slate-950/60 text-gray-100"
+                />
+                <button
+                  type="submit"
+                  className="rounded-xl bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-500 transition-all"
+                >
+                  Add
+                </button>
+              </form>
+            </div>
+
+            <div className="flex items-center justify-between mb-4">
               <span className="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full">
                 {progressPct}% Done
               </span>
