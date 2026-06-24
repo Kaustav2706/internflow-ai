@@ -72,9 +72,9 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           <div className="p-2 rounded-xl bg-gradient-to-tr from-blue-600 to-purple-600 shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform duration-300">
             <Compass className="w-5 h-5 text-white animate-pulse" />
           </div>
-          <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-            InternFlow <span className="text-blue-500">AI</span>
-          </span>
+          <span className="font-extrabold text-lg tracking-tight text-white drop-shadow-md">
+  InternFlow <span className="text-blue-400">AI</span>
+</span>
         </Link>
         {/* Mobile close button */}
         <button 
