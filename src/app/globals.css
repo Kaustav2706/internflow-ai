@@ -1,26 +1,224 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F3F4F6;
+  --foreground: #111827;
+  --card: #FFFFFF;
+  --card-foreground: #1F2937;
+  --border: rgba(0, 0, 0, 0.08);
+  --text-muted: #4B5563;
+  --panel-bg: rgba(255, 255, 255, 0.85);
+  --input-bg: rgba(255, 255, 255, 0.5);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Default to dark mode or when class is dark */
+.dark {
+  --background: #0B1120;
+  --foreground: #F3F4F6;
+  --card: #111827;
+  --card-foreground: #F3F4F6;
+  --border: rgba(255, 255, 255, 0.06);
+  --text-muted: #9CA3AF;
+  --panel-bg: rgba(17, 24, 39, 0.65);
+  --input-bg: rgba(17, 24, 39, 0.45);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-plus-jakarta-sans), system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 9999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #1F2937;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+
+/* Glassmorphism custom classes */
+.glass-panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(17, 24, 39, 0.8);
+  border-color: rgba(59, 130, 246, 0.25);
+  box-shadow: 0 12px 30px -10px rgba(59, 130, 246, 0.15);
+  transform: translateY(-2px);
+}
+.light .glass-panel-hover:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(59, 130, 246, 0.25);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.08);
+}
+
+.glass-input {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-input:focus {
+  outline: none;
+  border-color: #3B82F6;
+  background: var(--card);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+/* Shimmer animation */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.02) 20%,
+    rgba(255, 255, 255, 0.05) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 2s infinite;
+  content: '';
+}
+
+/* Automatic Color re-mappings for Light Mode (html without 'dark' class) */
+html:not(.dark) {
+  --background: #F3F4F6;
+  --foreground: #1F2937;
+  --card: #FFFFFF;
+  --card-foreground: #374151;
+  --border: rgba(0, 0, 0, 0.08);
+  --text-muted: #4B5563;
+  --panel-bg: rgba(255, 255, 255, 0.85);
+  --input-bg: rgba(255, 255, 255, 0.5);
+}
+
+html:not(.dark) body {
+  background-color: #F3F4F6 !important;
+  color: #1F2937 !important;
+}
+
+/* Background Color Class Overrides */
+html:not(.dark) .bg-\[\#0B1120\] {
+  background-color: #F3F4F6 !important;
+}
+html:not(.dark) .bg-\[\#0B1120\]\/75 {
+  background-color: rgba(243, 244, 246, 0.85) !important;
+}
+html:not(.dark) .bg-\[\#111827\] {
+  background-color: #FFFFFF !important;
+}
+html:not(.dark) .bg-\[\#111827\]\/40 {
+  background-color: rgba(255, 255, 255, 0.55) !important;
+}
+html:not(.dark) .bg-\[\#0F172A\] {
+  background-color: #FFFFFF !important;
+}
+html:not(.dark) .bg-slate-900\/60 {
+  background-color: rgba(243, 244, 246, 0.75) !important;
+}
+html:not(.dark) .bg-slate-900 {
+  background-color: #E5E7EB !important;
+}
+html:not(.dark) .bg-slate-950 {
+  background-color: #F3F4F6 !important;
+}
+html:not(.dark) .bg-slate-950\/40 {
+  background-color: rgba(243, 244, 246, 0.4) !important;
+}
+html:not(.dark) .bg-blue-950\/40 {
+  background-color: rgba(59, 130, 246, 0.05) !important;
+}
+html:not(.dark) .bg-purple-950\/40 {
+  background-color: rgba(139, 92, 246, 0.05) !important;
+}
+
+/* Text Overrides */
+html:not(.dark) .text-gray-100 {
+  color: #111827 !important;
+}
+html:not(.dark) .text-gray-200 {
+  color: #1F2937 !important;
+}
+html:not(.dark) .text-gray-350 {
+  color: #374151 !important;
+}
+html:not(.dark) .text-gray-300 {
+  color: #374151 !important;
+}
+html:not(.dark) .text-gray-400 {
+  color: #4B5563 !important;
+}
+html:not(.dark) .text-gray-500 {
+  color: #6B7280 !important;
+}
+html:not(.dark) .text-white {
+  color: #111827 !important;
+}
+html:not(.dark) .text-white\/90 {
+  color: rgba(17, 24, 39, 0.9) !important;
+}
+html:not(.dark) .text-blue-300 {
+  color: #2563EB !important;
+}
+html:not(.dark) .text-purple-300 {
+  color: #7C3AED !important;
+}
+
+/* Borders */
+html:not(.dark) .border-white\/5 {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+html:not(.dark) .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+html:not(.dark) .border-white\/15 {
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+html:not(.dark) .border-white\/20 {
+  border-color: rgba(0, 0, 0, 0.2) !important;
 }
