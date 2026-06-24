@@ -46,6 +46,10 @@ export interface UserProfile {
   tasksCompleted: number;
 }
 
+export interface RegisteredUser extends UserProfile {
+  password: string;
+}
+
 // Notification
 export interface NotificationItem {
   id: string;
@@ -96,8 +100,9 @@ interface AppContextType {
   resources: Resource[];
   chatHistory: ChatMessage[];
   isAiTyping: boolean;
-  login: (email: string, role: 'admin' | 'intern') => boolean;
+  login: (email: string, password: string, role: 'admin' | 'intern') => Promise<boolean>;
   logout: () => void;
+  register: (name: string, email: string, password: string, role: 'admin' | 'intern', team?: string) => Promise<boolean>;
   // Theme Toggles
   theme: 'dark' | 'light';
   toggleTheme: () => void;
@@ -118,7 +123,7 @@ interface AppContextType {
   markAllNotificationsRead: () => void;
   clearNotifications: () => void;
   // Profile Actions
-  updateProfile: (updated: Partial<UserProfile>) => void;
+  updateProfile: (updated: Partial<UserProfile>) => Promise<void>;
   // AI Actions
   sendChatMessage: (message: string) => void;
   clearChat: () => void;
@@ -360,6 +365,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [isAiTyping, setIsAiTyping] = useState<boolean>(false);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [registeredUsers, setRegisteredUsers] = useState<RegisteredUser[]>([]);
 
   // Initialize and load state from localStorage if available
   useEffect(() => {
@@ -371,15 +377,38 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const localResources = localStorage.getItem('if_resources');
     const localChat = localStorage.getItem('if_chat_history');
     const localTheme = (localStorage.getItem('if_theme') as 'dark' | 'light') || 'dark';
+    const localUsers = localStorage.getItem('if_registered_users');
 
     if (localUser) setCurrentUser(JSON.parse(localUser));
-    
     setAnnouncements(localAnnouncements ? JSON.parse(localAnnouncements) : defaultAnnouncements);
     setFaqs(localFaqs ? JSON.parse(localFaqs) : defaultFAQs);
     setNotifications(localNotifs ? JSON.parse(localNotifs) : defaultNotifications);
     setTeams(localTeams ? JSON.parse(localTeams) : defaultTeams);
     setResources(localResources ? JSON.parse(localResources) : defaultResources);
     setChatHistory(localChat ? JSON.parse(localChat) : defaultChat);
+    setRegisteredUsers(localUsers ? JSON.parse(localUsers) : [
+      {
+        name: 'Alex Mercer',
+        email: 'admin@internflow.ai',
+        password: 'admin123',
+        role: 'admin',
+        joinDate: '2026-01-15',
+        avatarUrl: '/avatars/admin.png',
+        streak: 15,
+        tasksCompleted: 45
+      },
+      {
+        name: 'Jane Doe',
+        email: 'intern@internflow.ai',
+        password: 'intern123',
+        role: 'intern',
+        team: 'Team Horizon (AI/ML)',
+        joinDate: '2026-06-01',
+        avatarUrl: '/avatars/intern.png',
+        streak: 8,
+        tasksCompleted: 12
+      }
+    ]);
 
     // Initialize Theme
     setTheme(localTheme);
@@ -406,36 +435,74 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem(key, JSON.stringify(data));
   };
 
-  const login = (email: string, role: 'admin' | 'intern'): boolean => {
-    let matchedUser: UserProfile;
-    if (role === 'admin' && email === 'admin@internflow.ai') {
-      matchedUser = {
-        name: 'Alex Mercer',
-        email: 'admin@internflow.ai',
-        role: 'admin',
-        joinDate: '2026-01-15',
-        avatarUrl: '/avatars/admin.png',
-        streak: 15,
-        tasksCompleted: 45
-      };
-    } else if (role === 'intern' && email === 'intern@internflow.ai') {
-      matchedUser = {
-        name: 'Jane Doe',
-        email: 'intern@internflow.ai',
-        role: 'intern',
-        team: 'Team Horizon (AI/ML)',
-        joinDate: '2026-06-01',
-        avatarUrl: '/avatars/intern.png',
-        streak: 8,
-        tasksCompleted: 12
-      };
-    } else {
-      return false; // Auth failure
-    }
+  const login = async (email: string, password: string, role: 'admin' | 'intern'): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      if (!res.ok) return false;
+      const payload = await res.json();
+      const token = payload.token;
+      const user = payload.user;
+      if (!user) return false;
 
-    setCurrentUser(matchedUser);
-    localStorage.setItem('if_current_user', JSON.stringify(matchedUser));
-    return true;
+      const matchedUser: UserProfile = {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        team: user.team,
+        joinDate: user.joinDate,
+        avatarUrl: user.avatarUrl,
+        streak: user.streak || 0,
+        tasksCompleted: user.tasksCompleted || 0
+      };
+
+      setCurrentUser(matchedUser);
+      localStorage.setItem('if_current_user', JSON.stringify(matchedUser));
+      if (token) localStorage.setItem('if_token', token);
+      return true;
+    } catch (err) {
+      console.error('Login error', err);
+      return false;
+    }
+  };
+
+  const register = async (name: string, email: string, password: string, role: 'admin' | 'intern', team?: string): Promise<boolean> => {
+    try {
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role, team })
+      });
+      if (!res.ok) {
+        return false;
+      }
+      const user = await res.json();
+
+      const profile: UserProfile = {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        team: user.team,
+        joinDate: user.joinDate,
+        avatarUrl: user.avatarUrl,
+        streak: user.streak || 0,
+        tasksCompleted: user.tasksCompleted || 0
+      };
+
+      setCurrentUser(profile);
+      localStorage.setItem('if_current_user', JSON.stringify(profile));
+      // Also append to registeredUsers locally for fallback
+      const updatedUsers = [...registeredUsers, { ...profile, password } as RegisteredUser];
+      setRegisteredUsers(updatedUsers);
+      saveState('if_registered_users', updatedUsers);
+      return true;
+    } catch (err) {
+      console.error('Registration error', err);
+      return false;
+    }
   };
 
   const logout = () => {
@@ -444,11 +511,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   // Profile Update
-  const updateProfile = (updated: Partial<UserProfile>) => {
+  const updateProfile = async (updated: Partial<UserProfile>) => {
     if (!currentUser) return;
     const newUser = { ...currentUser, ...updated };
     setCurrentUser(newUser);
     saveState('if_current_user', newUser);
+
+    try {
+      await fetch('/api/users', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentUser.email, updated: newUser })
+      });
+    } catch (err) {
+      console.error('Failed to persist profile update', err);
+    }
   };
 
   // Announcement Actions
@@ -709,7 +786,8 @@ If you are not yet assigned a team, please contact the **Admin Mentor** at \`adm
       clearNotifications,
       updateProfile,
       sendChatMessage,
-      clearChat
+      clearChat,
+      register
     }}>
       {children}
     </AppContext.Provider>

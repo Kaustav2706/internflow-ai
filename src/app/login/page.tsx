@@ -32,31 +32,20 @@ export default function Login() {
     setLoading(true);
 
     // Simulate short network delay
-    setTimeout(() => {
-      // Validate credentials
-      if (role === 'admin') {
-        if (email !== 'admin@internflow.ai' || password !== 'admin123') {
-          setError('Invalid administrator email or password.');
-          setLoading(false);
-          return;
+    (async () => {
+      try {
+        const success = await login(email, password, role);
+        if (success) {
+          router.replace(role === 'admin' ? '/dashboard/admin' : '/dashboard/intern');
+        } else {
+          setError('Invalid email, password, or role. Please verify your credentials.');
         }
-      } else {
-        if (email !== 'intern@internflow.ai' || password !== 'intern123') {
-          setError('Invalid intern email or password.');
-          setLoading(false);
-          return;
-        }
-      }
-
-      const success = login(email, role);
-      if (success) {
-        // Redirection handled by useEffect or manually below
-        router.replace(role === 'admin' ? '/dashboard/admin' : '/dashboard/intern');
-      } else {
-        setError('Authentication failed. Please verify credentials.');
+      } catch (err) {
+        setError('Sign in failed. Please try again.');
+      } finally {
         setLoading(false);
       }
-    }, 800);
+    })();
   };
 
   const handleQuickFill = (targetRole: 'admin' | 'intern') => {
@@ -250,6 +239,17 @@ export default function Login() {
               )}
             </button>
           </form>
+
+          <div className="mt-5 text-center text-sm text-gray-400">
+            New here?{' '}
+            <button
+              type="button"
+              onClick={() => router.push('/register')}
+              className="text-white font-semibold hover:text-blue-200"
+            >
+              Create an account
+            </button>
+          </div>
 
           {/* Quick Demo Pre-fills */}
           <div className="mt-8 pt-6 border-t border-white/5 space-y-3">

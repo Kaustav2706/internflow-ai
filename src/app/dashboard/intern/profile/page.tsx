@@ -15,6 +15,7 @@ import {
 
 export default function InternProfile() {
   const { currentUser, updateProfile } = useApp();
+  const displayName = currentUser?.name || 'Intern';
 
   const [name, setName] = useState(currentUser?.name || '');
   const [email, setEmail] = useState(currentUser?.email || '');

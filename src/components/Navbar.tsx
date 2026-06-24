@@ -238,7 +238,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
             className="flex items-center gap-1.5 p-1 rounded-lg bg-gray-800/40 hover:bg-gray-800 border border-white/5 cursor-pointer text-left transition-all duration-200"
           >
             <div className="w-7.5 h-7.5 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-extrabold flex items-center justify-center text-xs shadow-inner">
-              {currentUser.name[0]}
+              {currentUser?.name?.[0] ?? 'U'}
             </div>
             <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
           </button>
@@ -261,7 +261,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                 {/* Links list */}
                 <div className="p-1.5 space-y-0.5">
                   <Link
-                    href={currentUser.role === 'admin' ? '/dashboard/admin/settings' : '/dashboard/intern/profile'}
+                    href={currentUser?.role === 'admin' ? '/dashboard/admin/settings' : '/dashboard/intern/profile'}
                     onClick={() => setProfileOpen(false)}
                     className="flex items-center gap-2.5 w-full py-2 px-3 rounded-lg text-xs font-semibold text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
                   >
