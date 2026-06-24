@@ -304,7 +304,7 @@ const defaultResources: Resource[] = [
     title: 'Core Repository (GitHub)',
     description: 'The master codebase for the group projects. Fork and submit pull requests here.',
     category: 'GitHub Repository',
-    link: 'https://github.com/internflow-ai/core-workspace',
+    link: 'https://github.com',
     type: 'github',
   },
   {
@@ -312,7 +312,7 @@ const defaultResources: Resource[] = [
     title: 'Onboarding & Guidelines Docs',
     description: 'Detailed guidelines explaining standard operating procedures, deliverables, and timelines.',
     category: 'Documentation',
-    link: 'https://notion.so/internflow-onboarding-docs',
+    link: 'https://www.notion.so',
     type: 'docs',
   },
   {
@@ -326,17 +326,17 @@ const defaultResources: Resource[] = [
   {
     id: 'res-4',
     title: 'Daily Standup (Google Meet)',
-    description: 'Active link for the mandatory daily status updates meeting (Every weekday 10:00 AM IST).',
+    description: 'Active link for the mandatory daily status updates meeting.',
     category: 'Meeting Links',
-    link: 'https://meet.google.com/abc-defg-hij',
+    link: 'https://meet.google.com',
     type: 'meeting',
   },
   {
     id: 'res-5',
     title: 'Weekly Deliverables Submission',
-    description: 'Portal link to submit weekly reports, wireframes, and GitHub pull request URLs.',
+    description: 'Portal link to submit weekly reports.',
     category: 'Submission Links',
-    link: 'https://forms.gle/internflow-weekly-submissions',
+    link: 'https://forms.google.com',
     type: 'submission',
   }
 ];

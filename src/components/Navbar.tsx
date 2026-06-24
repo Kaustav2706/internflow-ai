@@ -153,7 +153,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 mt-2.5 w-80 rounded-xl bg-gray-900 border border-white/5 shadow-2xl overflow-hidden z-30"
+               className="absolute right-0 mt-2.5 w-80 rounded-xl bg-[#111827] border border-gray-700 shadow-[0_10px_40px_rgba(0,0,0,0.8)] overflow-hidden z-50"
               >
                 {/* Header */}
                 <div className="p-3 bg-slate-900/60 border-b border-white/5 flex items-center justify-between">
@@ -190,7 +190,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                 </div>
 
                 {/* Notification Items */}
-                <div className="max-h-64 overflow-y-auto divide-y divide-white/5">
+                <div className="max-h-96 overflow-y-auto divide-y divide-white/5">
                   {notifications.length > 0 ? (
                     notifications.map((notif) => (
                       <div
@@ -250,7 +250,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 mt-2.5 w-56 rounded-xl bg-gray-900 border border-white/5 shadow-2xl overflow-hidden z-30"
+               className="absolute right-0 mt-2.5 w-56 rounded-xl bg-[#111827] border border-gray-700 shadow-[0_10px_40px_rgba(0,0,0,0.8)] overflow-hidden z-50"
               >
                 {/* User Info card */}
                 <div className="p-3.5 bg-slate-900/60 border-b border-white/5 flex flex-col gap-0.5">
