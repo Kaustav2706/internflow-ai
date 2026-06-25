@@ -35,11 +35,18 @@ The backend exposes:
 - `GET/POST/PUT/DELETE /api/questions`
 - `GET/POST/PUT/DELETE /api/answers`
 
-### AI Assistant
 
-The Next.js app includes an AI assistant at `/dashboard/intern/ai-assistant`.
-It uses the local `src/app/api/chat/route.ts` endpoint, which calls OpenAI when `OPENAI_API_KEY` is configured.
-If no key is present, the assistant will still respond with a fallback helper message.
+### AI Assistant (Yaksha)
+
+* AI-powered assistant integrated into the InternFlow AI platform.
+* Accessible at `/dashboard/intern/ai-assistant`.
+* Answers internship-related questions and common FAQs.
+* Assists users with platform navigation and available resources.
+* Provides guidance on deadlines, workflows, and internship activities.
+* Uses the local `src/app/api/chat/route.ts` API endpoint for chat processing.
+* Integrates with OpenRouter when `OPENROUTER_API_KEY` is configured.
+* Includes a fallback response system to ensure uninterrupted assistance when an API key is unavailable.
+
 
 ## Frontend
 
