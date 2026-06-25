@@ -12,27 +12,308 @@ const createSSEStream = async (content: string) => {
   return stream;
 };
 
-const fallbackReply = (messages: Array<{ role: string; content: string }>) => {
-  const lastUser = messages.slice().reverse().find((m) => m.role === 'user');
-  const prompt = lastUser?.content?.toLowerCase() || '';
+const fallbackReply = (
+  messages: Array<{ role: string; content: string }>
+) => {
+  const lastUser = messages.slice().reverse().find((m) => m.role === "user");
+  const prompt = (lastUser?.content || "").toLowerCase().trim();
+  console.log("USER PROMPT:", prompt);
 
-  if (prompt.includes('hi') || prompt.includes('hello')) {
-    return `Hello! I am Yaksha AI, your internship assistant. Ask me about project workflow, Git commands, Next.js, or anything related to your internship tasks.`;
+  //keyword 
+
+  const joinKeywords = [
+  "join internship",
+  "join this internship",
+  "how to join",
+  "enroll",
+  "register",
+  "apply",
+  "sign up",
+  "become intern"
+];
+
+const roadmapKeywords = [
+  "roadmap",
+  "timeline",
+  "internship roadmap",
+  "internship flow",
+  "flow of internship",
+  "journey", 
+  "flow",
+  "internship structure",
+  "program flow"
+];
+
+const internshipDetailsKeywords = [
+  "details about this internship",
+  "internship details",
+  "about internship",
+  "what is internflow",
+  "about internflow",
+  "internship information",
+  "tell me about internship"
+];
+
+
+const weeklyTaskKeywords = [
+  "what should i complete this week",
+  "what should i do this week",
+  "weekly tasks",
+  "current week",
+  "week",
+  "what for this week",
+  "what for today",
+  "this week",
+  "what next"
+];
+
+const announcementKeywords = [
+  "announcement",
+  "announcements",
+  "latest announcement",
+  "updates",
+  "news"
+];
+
+const teamKeywords = [
+  "team",
+  "teammate",
+  "group",
+  "team formation",
+  "join team"
+];
+
+const certificateKeywords = [
+  "certificate",
+  "certificates",
+  "badge",
+  "bronze",
+  "silver",
+  "gold",
+  "platinum",
+  "prize",
+  "reward"
+];
+
+const submissionKeywords = [
+  "submit",
+  "submission",
+  "deliverable",
+  "upload project",
+  "weekly report",
+  "project files"
+];
+
+const resourceKeywords = [
+  "resources",
+  "resource",
+  "template",
+  "guidelines",
+  "mern course",
+  "course"
+];
+
+const meetingKeywords = [
+  "zoom",
+  "meeting",
+  "standup",
+  "standups",
+  "attendance",
+  "meeting link"
+];
+const helpKeywords = [
+  "help",
+  "support",
+  "not working",
+  "cant access",
+  "loading",
+  "error",
+  "bug",
+  "contact",
+  "contact team",
+  "issue",
+  "problem",
+  "stuck",
+  "glitch",
+  "admin"
+];
+
+  // Greetings
+  const words = prompt.split(/\s+/);
+
+if (
+  words.includes("hi") || words.includes("hllo") ||words.includes("hiiii") || 
+  words.includes("hai") ||
+  words.includes("hello") ||
+  words.includes("Yaksha") ||
+  words.includes("hey")
+)
+   {
+    return `Hello! 👋 I am Yaksha AI, the InternFlow internship assistant.
+
+I can help you with:
+• Internship roadmap
+• Coursework and learning resources
+• Teams and collaboration
+• Standup meetings
+• Deliverable submissions
+• Project workflow
+• Certificates and badges
+• Announcements and resources
+
+How can I help you today?`;
   }
 
-  if (prompt.includes('git')) {
-    return `Use Git by creating a branch from main or dev, commit your changes locally, then push to origin. Open a PR and share the link with your mentor.`;
-  }
+  if (joinKeywords.some(k => prompt.includes(k))) {
+  return `To join the InternFlow internship, complete the registration process and follow the onboarding instructions shared by the InternFlow team.
 
-  if (prompt.includes('next.js') || prompt.includes('next js')) {
-    return `Next.js uses pages or app routes. In this app, use the App Router and API routes under src/app/api for server code. Create UI in components and pages under src/app.`;
-  }
+Once enrolled:
+• Check announcements regularly
+• Attend the onboarding Zoom session
+• Review the Starter Kit
+• Complete assigned coursework
+• Participate in team activities and projects`;
+}
 
-  if (prompt.includes('backend') || prompt.includes('express')) {
-    return `The backend is a Node/Express server. You can call /api/chat from the frontend and add endpoints for auth, questions, and answers.`;
-  }
+if (internshipDetailsKeywords.some(k => prompt.includes(k))) {
+  return `InternFlow is a structured internship program designed to help students gain practical industry experience.
 
-  return `I am ready to help. Please describe your question in more detail and I will do my best to assist.`;
+The internship includes:
+• Fundamentals of AI coursework
+• MERN Stack learning track
+• Team-based collaboration
+• Daily standup meetings
+• Weekly deliverables
+• Real-world project development
+• GitHub and Pull Request workflow
+• Mentor guidance and feedback
+• Certificates and badge progression
+
+The program is designed to help interns learn, collaborate, and build industry-relevant skills through hands-on projects.`;
+}
+
+if (roadmapKeywords.some(k => prompt.includes(k))) {
+  return `InternFlow Internship Roadmap
+
+Before Week 1
+• Check announcements
+• Attend onboarding Zoom session
+• Review Starter Kit
+
+Week 1
+• Orientation
+• Fundamentals of AI coursework
+• Team formation (10 members)
+• Start FAQ project
+
+Weeks 2-3
+• Complete MERN Stack coursework
+• Continue FAQ project
+
+Week 4
+• Submit FAQ deliverable
+• Form Phase 2 team (5 members)
+
+Weeks 5-8
+• Build project with your team
+• Raise Pull Requests
+• Mentor reviews
+• Daily standups
+
+Badge Progression:
+Bronze → Silver → Gold → Platinum`;
+}
+
+if (weeklyTaskKeywords.some(k => prompt.includes(k))) {
+  return `Check your dashboard checklist and deadlines first.
+
+Typical internship progress:
+
+• Week 1: Orientation, AI coursework, team formation, FAQ project
+• Weeks 2-3: MERN coursework and FAQ project
+• Week 4: Deliverable submission and Phase 2 team formation
+• Weeks 5-8: Project development, testing, PR submissions, mentor reviews
+
+Complete any pending coursework, deliverables, and standup requirements for your current week.`;
+}
+
+if (announcementKeywords.some(k => prompt.includes(k))) {
+  return `You can find internship updates, deadlines, meeting schedules, and important notices in the Announcements section of the InternFlow platform. Check it regularly so you don't miss important updates.`;
+}
+
+if (teamKeywords.some(k => prompt.includes(k))) {
+  return `InternFlow uses team-based collaboration.
+
+• Week 1 teams typically contain around 10 members.
+• Phase 2 projects usually use smaller teams.
+• Coordinate with fellow interns and mentors when forming teams.
+• Project submission links and deadlines are available on the dashboard and announcements.
+• Stay active in team discussions and project planning.`;
+}
+
+if (certificateKeywords.some(k => prompt.includes(k))) {
+  return `InternFlow recognizes participation through certificates and badges.
+
+• Bronze: Coursework + Attendance
+• Silver: Active Contribution
+• Gold: Strong Project Contribution
+• Platinum: Post-internship Collaboration
+
+Stay active, complete coursework, attend standups, and contribute to projects to maximize your progress.`;
+}
+
+if (submissionKeywords.some(k => prompt.includes(k))) {
+  return `Weekly deliverables and project submissions should be uploaded through the InternFlow submission process.
+
+Before submitting:
+• Review submission guidelines
+• Include all required files
+• Verify project functionality
+• Submission links and deadlines are available on the dashboard and announcements
+• Submit before the deadline`;
+}
+
+if (resourceKeywords.some(k => prompt.includes(k))) {
+  return `Available resources include:
+
+• MERN Stack Course
+• Fundamentals of AI Coursework
+• Project Templates
+• Development Guidelines
+• Weekly Submission Forms
+• Internship Resources
+
+Check the Resources section for the latest materials.`;
+}
+
+if (meetingKeywords.some(k => prompt.includes(k))) {
+  return `Daily standups help interns discuss progress and blockers.
+• Attend scheduled Zoom meetings
+• Share your progress
+• Discuss blockers
+• Coordinate with teammates
+Meeting information is available through announcements and internship resources.`;
+}
+
+if (helpKeywords.some(k => prompt.includes(k))) {
+  return `Need assistance?
+
+If you're facing issues related to the internship, coursework, teams, submissions, meetings, or platform access, please use the Help button available on the platform to contact the InternFlow team.
+The support team can help with:
+• Platform issues
+• Team-related concerns
+• Submission problems
+• Meeting access
+• Internship guidance
+• Account-related queries
+Click the Help button to reach the team directly.`;
+}
+
+
+  // Unrelated Questions
+  return `Yaksha AI specialize in guiding interns in navigating the InternFlow platform and internship workflow. For non-InternFlow topics, please redirect to a general GPT assistant to sort out coding,academic,debugging or study related questions. If you are facing a platform-related issue, please click the Help button to contact the InternFlow team directly.
+  Check for typos and rephrase your question if needed.
+  Ask me anything related to InternFlow internship guidance, and I'll be happy to assist you!`;
 };
 
 const createProviderConfig = () => {
@@ -124,18 +405,16 @@ You should help users with:
 - Announcements
 - FAQs
 - Resources
-- Project guidance
-- Git and GitHub
-- Next.js and React
-- DSA and coding questions
-- Submission process
-- Daily tasks and streaks
-
-When users ask platform-related questions, answer specifically in the context of InternFlow.
-
+- Coursework guidance
+- Team formation
+- Deliverable submissions
+- Standup meetings
+- Certificates and badges
+- Project workflow
+- GitHub pull request process
+If a user asks unrelated coding, academic, interview, or debugging questions, politely explain that Yaksha specializes in InternFlow internship guidance and recommend using a dedicated AI assistant for those topics.
 Keep responses concise, friendly, and educational.
 
-Do not mention OpenAI or OpenRouter.
 Always behave as Yaksha AI.
 `
     },

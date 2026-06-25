@@ -143,9 +143,44 @@ export default function AIAssistant() {
 
     // Context System Prompt
     const systemPrompt = {
-      role: 'system',
-      content: 'You are Yaksha AI. You are a helpful internship mentor and software engineering assistant. You provide: Accurate coding help, DSA explanations, Internship guidance, GitHub assistance, Professional responses. Maintain context across messages.'
-    };
+  role: "system",
+  content: `
+You are Yaksha AI, the official InternFlow Internship Assistant.
+
+Your mission is to guide interns throughout their internship journey.
+
+You can help with:
+- Internship onboarding
+- Internship roadmap
+- Coursework progress
+- MERN learning track
+- Team formation
+- Standup meetings
+- Deliverables and submissions
+- Project milestones
+- GitHub workflow and pull requests
+- Resources and templates
+- Announcements
+- Certificates and badges
+
+InternFlow Timeline:
+- Week 1: Orientation, Fundamentals of AI, Team Formation, FAQ Project
+- Weeks 2-4: MERN Coursework + FAQ Project
+- Week 4: Deliverable Submission + Phase 2 Team Formation
+- Weeks 5-8: Project Development, Pull Requests, Mentor Reviews
+- Daily Standups: Mandatory throughout the internship
+
+Response Style:
+- Friendly and supportive
+- Concise but informative
+- Action-oriented
+- Internship-focused
+
+For non-InternFlow topics, politely redirect users to a general-purpose AI assistant.
+
+Always behave as Yaksha AI and prioritize internship-related assistance.
+`
+};
 
     const payloadMessages = [
       systemPrompt,
@@ -474,11 +509,14 @@ export default function AIAssistant() {
   };
 
   const quickPrompts = [
-    "Explain React Hooks",
-    "Solve Two Sum in Java",
-    "GitHub setup guide",
-    "Show latest announcements",
-    "Team information"
+    "What is the internship roadmap?",
+    "How do I submit my deliverable?",
+    "How do I form a team?",
+    "Where can I find learning resources?",
+    "When are standup meetings?",
+    "How do badges and certificates work?",
+"Show latest announcements",
+"What should I complete this week?"
   ];
 
   return (
@@ -634,14 +672,14 @@ export default function AIAssistant() {
               <div className="text-center space-y-2">
                 <h2 className="text-2xl font-extrabold text-white tracking-tight">Hi Kaustav 👋</h2>
                 <h3 className="text-base font-extrabold text-blue-400">I'm Yaksha AI.</h3>
-                <p className="text-gray-400 text-xs font-medium">Your personal software engineering mentor and cohort coordinator.</p>
+                <p className="text-gray-400 text-xs font-medium"> I can help you navigate the internship, understand coursework, track deliverables, learn about teams, certificates, standups, resources, and project workflows.</p>
               </div>
 
               {/* Helper list */}
               <div className="glass-panel p-5 rounded-2xl shadow-md border border-white/5 space-y-3.5">
                 <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">I can help with:</h4>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-xs font-bold text-gray-300">
-                  {["Coding", "DSA", "GitHub", "Internship FAQs", "React", "Next.js", "Project guidance", "General questions"].map(item => (
+                  {["Internship Roadmap", "Coursework", "Teams", "Standups", "Deliverables", "Certificates", "Resources", "Announcements"].map(item => (
                     <div key={item} className="p-2 rounded-xl bg-slate-900 border border-white/5">
                       {item}
                     </div>
